@@ -1,14 +1,32 @@
-version: 2.1
+version: 2
 orbs:
   newman: postman/newman@0.0.2
 jobs:
   build:
-    executor: newman/postman-newman-docker
+    docker:
+      - image: python:3.6.3-jessie
+        auth:
+          username: mydockerhub-user
+          password: $DOCKERHUB_PASSWORD  # context / project UI env-var reference
+
+    working_directory: /tmp
     steps:
-      - checkout
+	 - checkout
       - newman/newman-run:
           collection: ./test/postman_collection.json
           ignore-redirects: true
           additional-options: -r cli,junit
-         
+      - run:
+          name: Creating Dummy Artifacts
+          command: |
+            echo "my artifact file" > /tmp/artifact-1;
+            mkdir /tmp/artifacts;
+            echo "my artifact files in a dir" > /tmp/artifacts/artifact-2;
+
+      - store_artifacts:
+          path: /tmp/artifact-1
+          destination: artifact-file
+
+      - store_artifacts:
+          path: /tmp/artifacts
           
