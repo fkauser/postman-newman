@@ -3,31 +3,22 @@ orbs:
   newman: postman/newman@0.0.2
 jobs:
   build:
-    docker:
-      - image: circleci/node:10.16.3
     executor: newman/postman-newman-docker
     steps:
-      - checkout
-      - run:
-          name: Install Dependencies
-          command: npm install -g newman-reporter-html
-      
+      - checkout    
       - newman/newman-run:
           collection: ./test/postman_collection.json
           ignore-redirects: true
-          additional-options: -r cli,junit,json,html
-         
-         
-     
-        
+          additional-options: -r cli,junit,json,html              
+           
       - run:
           name: Save Test Result
           command: |
-            echo "my artifact file ***" 
+            echo "***my artifact files ***" 
             mkdir -p api/test-results/newman
             cp ./newman/newman-run-report-*.xml api/test-results/newman
             cp ./newman/newman-run-report-*.json api/test-results/newman
-            cp ./newman/newman-run-report-*.html api/test-results/newman
+       
          
       - store_test_results:
           path: api/test-results
