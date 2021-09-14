@@ -6,7 +6,7 @@ jobs:
     executor: newman/postman-newman-docker
     steps:
       - checkout
-       - run:
+      - run:
           name: Install Dependencies
           command: npm install -g newman-reporter-html
       
