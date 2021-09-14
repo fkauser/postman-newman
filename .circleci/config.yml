@@ -8,6 +8,6 @@ jobs:
       - checkout
       - newman/newman-run:
           collection: ./ForestApp_api_collection.json
-          ignore-redirects: true
+          ignore-redirects: false
          
           
