@@ -11,7 +11,7 @@ jobs:
 
     working_directory: /tmp
     steps:
-	 - checkout
+      - checkout
       - newman/newman-run:
           collection: ./test/postman_collection.json
           ignore-redirects: true
