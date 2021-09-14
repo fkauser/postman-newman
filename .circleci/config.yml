@@ -6,15 +6,17 @@ jobs:
     executor: newman/postman-newman-docker
     steps:
       - checkout
+       - run:
+          name: Install Dependencies
+          command: npm install -g newman-reporter-html
+      
       - newman/newman-run:
           collection: ./test/postman_collection.json
           ignore-redirects: true
           additional-options: -r cli,junit,json,html
          
          
-      - run:
-          name: Install Dependencies
-          command: npm install -g newman-reporter-html
+     
         
       - run:
           name: Save Test Result
