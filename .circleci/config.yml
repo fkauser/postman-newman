@@ -7,6 +7,6 @@ jobs:
     steps:
       - checkout
       - newman/newman-run:
-          collection: ./postman_collection.json
+          collection: ./ForestApp_api_collection.json
          
           
