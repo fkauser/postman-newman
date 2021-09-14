@@ -160,8 +160,9 @@
 									"script": {
 										"exec": [
 											"// using built in postman random email call\r",
-											"pm.environment.set(\"username\", 'test_user2@openrm.co.jp')\r",
-											"console.log(pm.environment.get(\"username\"))",
+											"let randomUser = pm.variables.replaceIn("{{$randomEmail}}");\r",
+											"pm.environment.set(\"username\", ((randomUser.split(/[@]+/))[0] + '@openrm.co.jp'));\r",
+											"console.log(pm.environment.get(\"username\"))\r",
 											"\r",
 											"\r",
 											"let randomPass = 'testapi1!'\r",
