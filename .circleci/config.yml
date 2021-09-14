@@ -10,6 +10,7 @@ jobs:
           collection: ./test/postman_collection.json
           ignore-redirects: true
           additional-options: -r cli,junit
+         
         
       - run:
           name: Save Test Result
@@ -17,6 +18,7 @@ jobs:
             echo "my artifact file ***" 
             mkdir -p api/test-results/newman
             cp ./newman/newman-run-report-*.xml api/test-results/newman
+            cp ./newman/newman-run-report-*.json api/test-results/newman
          
       - store_test_results:
           path: api/test-results
