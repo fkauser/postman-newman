@@ -16,8 +16,10 @@ jobs:
           command: |
             echo "***my artifact files ***" 
             mkdir -p api/test-results/newman
-            cp ./newman-run-report-*.xml api/test-results/newman
-            cp ./newman-run-report-*.json api/test-results/newman
+            cp ./newman/newman-run-report-*.xml api/test-results/newman
+            cp ./newman/newman-run-report-*.json api/test-results/newman
+            echo ${CIRCLE_BRANCH}
+            echo ${CIRCLE_BUILD_NUM}
        
          
       - store_test_results:
