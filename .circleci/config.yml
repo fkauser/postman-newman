@@ -7,6 +7,6 @@ jobs:
     steps:
       - checkout
       - newman/newman-run:
-          collection: ./test/postman_collection.json
+          collection: ./postman_collection.json
          
           
