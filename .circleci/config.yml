@@ -16,8 +16,8 @@ jobs:
           command: |
             echo "***my artifact files ***" 
             mkdir -p api/test-results/newman
-            cp ./newman/newman-run-report-*.xml api/test-results/newman
-            cp ./newman/newman-run-report-*.json api/test-results/newman
+            cp ./xml/newman-run-report-*.xml api/test-results/newman
+            cp ./json/newman-run-report-*.json api/test-results/newman
        
          
       - store_test_results:
