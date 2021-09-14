@@ -15,12 +15,12 @@ jobs:
           name: Save Test Result
           command: |
             echo "my artifact file ***" 
-            mkdir -p ~/test-results/newman
-            cp ./newman/newman-run-report-*.xml ~/test-results/newman
+            mkdir -p api/test-results/newman
+            cp ./newman/newman-run-report-*.xml api/test-results/newman
          
       - store_test_results:
-          path: ~/test-results
+          path: api/test-results
           
       - store_artifacts:
-          path: ~/test-results/newman
+          path: api/test-results/newman
           
