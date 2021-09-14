@@ -164,7 +164,7 @@
 											"console.log(pm.environment.get(\"username\"))",
 											"\r",
 											"\r",
-											"let randomPass = pm.variables.replaceIn('{{$randomPassword}}')\r",
+											"let randomPass = 'testapi1!'\r",
 											"pm.environment.set(\"password\", randomPass);\r",
 											"console.log('...' + randomPass);\r",
 											"\r",
