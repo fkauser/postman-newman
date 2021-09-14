@@ -3,6 +3,8 @@ orbs:
   newman: postman/newman@0.0.2
 jobs:
   build:
+    docker:
+      - image: circleci/node:10.16.3
     executor: newman/postman-newman-docker
     steps:
       - checkout
