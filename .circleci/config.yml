@@ -3,6 +3,7 @@ orbs:
   newman: postman/newman@0.0.2
 jobs:
   build:
+    executor: newman/postman-newman-docker
     docker:
       - image: python:3.6.3-jessie
         auth:
