@@ -1,13 +1,49 @@
 version: 2.1
 orbs:
   newman: postman/newman@0.0.2
+  slack: circleci/slack@4.4
+ 
+commands:
+  notify_slack_error:
+    steps:
+      - slack/notify:
+          event: fail
+          template: basic_fail_1
+
+  notify_slack_pass:
+    steps:
+      - slack/notify:
+          event: pass
+          template: basic_success_1
+  
+  
+  trigger_slack_notification:
+    steps:
+      - slack/notify:
+          custom: |
+            {
+              "blocks": [
+                {
+                  "type": "section",
+                  "fields": [
+                    {
+                      "type": "plain_text",
+                      "text": "*This is a text notification*",
+                      "emoji": true
+                    }
+                  ]
+                }
+              ]
+            }
+          event: always
+  
 jobs:
   build:
-    
-    executor: newman/postman-newman-docker
     docker:
       - image: cimg/base:stable
+    executor: newman/postman-newman-docker
     steps:
+      - trigger_slack_notification
       - checkout
       - newman/newman-run:
           collection: ./test/postman_collection.json
@@ -30,6 +66,9 @@ jobs:
           
       - store_artifacts:
           path: api/test-results/newman
+          
+      - notify_slack_error
+      - notify_slack_pass
           
 workflows:
   version: 2
