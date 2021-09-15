@@ -18,6 +18,8 @@ commands:
   
 jobs:
   build:
+    docker:
+      - image: 'cimg/base:stable'
     executor: newman/postman-newman-docker
     steps:
       - checkout
