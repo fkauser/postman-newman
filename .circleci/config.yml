@@ -5,6 +5,8 @@ jobs:
   build:
     
     executor: newman/postman-newman-docker
+    docker:
+      - image: cimg/base:stable
     steps:
       - checkout
       - newman/newman-run:
