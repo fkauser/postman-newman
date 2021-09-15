@@ -9,13 +9,14 @@ commands:
     before_script:
      - apk add --update curl && rm -rf /var/cache/apk/*
     steps:
-      - run:
-          name: Download jq
+      - run: apk update && apk add curl curl-dev
+           name: Download jq
           command: curl -sLo jq https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64 && chmod +x ./jq
 jobs:
   build:
     executor: newman/postman-newman-docker
     steps:
+      - active_scan
       - checkout
       - newman/newman-run:
           collection: ./test/postman_collection.json
