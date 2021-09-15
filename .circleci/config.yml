@@ -6,6 +6,10 @@ jobs:
     executor: newman/postman-newman-docker
     steps:
       - checkout
+      - run:
+          name: Download jq
+          command: curl -sLo jq https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64 && chmod +x ./jq
+          
       - newman/newman-run:
           collection: ./test/postman_collection.json
           ignore-redirects: true
