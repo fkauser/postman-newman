@@ -1,61 +1,25 @@
 version: 2.1
-orbs:
-  newman: postman/newman@0.0.2
-
-image: docker:stable
- 
-commands:
-  active_scan:
-    steps:
-      - run: 
-          name: Download jq
-          command: curl -sLo jq https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64 && chmod +x ./jq
 jobs:
   build:
-    executor: newman/postman-newman-docker
+    working_directory: ~/api
+    docker:
+      - image: circleci/node:10.16.3
     steps:
       - checkout
-      - newman/newman-run:
-          collection: ./test/postman_collection.json
-          ignore-redirects: true
-          additional-options: -r cli,junit,json              
-           
       - run:
-          name: Save Test Result
-          command: |
-            echo "***my artifact files ***" 
-            mkdir -p api/test-results/newman
-            cp ./newman/newman-run-report-*.xml api/test-results/newman
-            cp ./newman/newman-run-report-*.json api/test-results/newman
-            echo ${CIRCLE_BRANCH}
-            echo ${CIRCLE_BUILD_NUM}
-       
-         
-      - store_test_results:
-          path: api/test-results
-          
+          name: Update NPM
+          command: "sudo npm install -g npm@5"
+      - restore_cache:
+          key: dependency-cache-{{ checksum "package-lock.json" }}
+      - run:
+          name: Install Dependencies
+          command: npm install
+      - save_cache:
+          key: dependency-cache-{{ checksum "package-lock.json" }}
+          paths:
+            - ./node_modules
+      - run:
+          name: Generate Report
+          command: npm run report
       - store_artifacts:
-          path: api/test-results/newman
-          
-      - run: apk update && apk add curl curl-dev
-          
-      - run: 
-          name: Download jq
-          command: curl -sLo jq https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64 && chmod +x ./jq
-          
-workflows:
-  version: 2
-  weekly:
-    triggers:
-      - schedule:
-          cron: "0 3 * * 4" # At 03:00 on Thursday https://crontab.guru/
-          filters:
-            branches:
-              only:
-                - main
-    jobs:
-      - build
-
-  manual:
-    jobs:
-      - build
+          path: ~/api/newman
