@@ -6,16 +6,15 @@ image: docker:stable
  
 commands:
   active_scan:
-    before_script:
-     - apk add --update curl && rm -rf /var/cache/apk/*
     steps:
-      - run: apk update && apk add curl curl-dev
-           name: Download jq
+      - run: 
+          name: Download jq
           command: curl -sLo jq https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64 && chmod +x ./jq
 jobs:
   build:
     executor: newman/postman-newman-docker
     steps:
+      - run: apk update && apk add curl curl-dev
       - active_scan
       - checkout
       - newman/newman-run:
