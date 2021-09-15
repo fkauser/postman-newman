@@ -17,7 +17,7 @@ commands:
           template: basic_success_1
   
 jobs:
-  build:
+  notify:
     docker:
       - image: 'cimg/base:stable'
     executor: newman/postman-newman-docker
