@@ -14,6 +14,7 @@ jobs:
     executor: newman/postman-newman-docker
     steps:
       - checkout
+      - active_scan
       - newman/newman-run:
           collection: ./test/postman_collection.json
           ignore-redirects: true
