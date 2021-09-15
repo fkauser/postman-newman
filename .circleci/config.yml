@@ -1,15 +1,26 @@
 version: 2.1
 orbs:
   newman: postman/newman@0.0.2
+  slack: circleci/slack@4.3.0
+ 
+ commands:
+  notify_slack_error:
+    steps:
+      - slack/notify:
+          event: fail
+          template: basic_fail_1
+
+  notify_slack_pass:
+    steps:
+      - slack/notify:
+          event: pass
+          template: basic_success_1
+  
 jobs:
   build:
     executor: newman/postman-newman-docker
     steps:
       - checkout
-      - run:
-          name: Download jq
-          command: curl -sLo jq https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64 && chmod +x ./jq
-          
       - newman/newman-run:
           collection: ./test/postman_collection.json
           ignore-redirects: true
@@ -31,6 +42,9 @@ jobs:
           
       - store_artifacts:
           path: api/test-results/newman
+          
+      - notify_slack_error
+      - notify_slack_pass
           
 workflows:
   version: 2
