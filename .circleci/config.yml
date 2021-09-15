@@ -28,4 +28,19 @@ jobs:
       - store_artifacts:
           path: api/test-results/newman
           
-     
+workflows:
+  version: 2
+  weekly:
+    triggers:
+      - schedule:
+          cron: "0 3 * * thu" # every Thurs at noon
+          filters:
+            branches:
+              only:
+                - main
+    jobs:
+      - build
+
+  manual:
+    jobs:
+      - build
