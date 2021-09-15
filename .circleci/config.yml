@@ -33,7 +33,7 @@ workflows:
   weekly:
     triggers:
       - schedule:
-          cron: "0 3 * * thu" # every Thurs at noon
+          cron: "0 0 3 ? * THU *" # every Thurs at noon
           filters:
             branches:
               only:
