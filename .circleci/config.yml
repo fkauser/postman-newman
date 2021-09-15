@@ -1,14 +1,11 @@
 version: 2.1
 jobs:
   build:
-    working_directory: ~/api
     docker:
-      - image: circleci/node:10.16.3
+      - image: cimg/node:16.8.0
     steps:
       - checkout
-      - run:
-          name: Update NPM
-          command: "sudo npm install -g npm@5"
+      - run: node --version
       - restore_cache:
           key: dependency-cache-{{ checksum "package-lock.json" }}
       - run:
