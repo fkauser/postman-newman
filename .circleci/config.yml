@@ -4,8 +4,9 @@ orbs:
 
 
 commands:
-  steps:
-   - run:
+  active_scan:
+    steps:
+      - run:
           name: Download jq
           command: curl -sLo jq https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64 && chmod +x ./jq
 jobs:
