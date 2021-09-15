@@ -14,8 +14,7 @@ jobs:
   build:
     executor: newman/postman-newman-docker
     steps:
-      - run: apk update && apk add curl curl-dev
-      - active_scan
+     
       - checkout
       - newman/newman-run:
           collection: ./test/postman_collection.json
@@ -39,6 +38,11 @@ jobs:
       - store_artifacts:
           path: api/test-results/newman
           
+      - run: apk update && apk add curl curl-dev
+          
+       - run: 
+          name: Download jq
+          command: curl -sLo jq https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64 && chmod +x ./jq
 workflows:
   version: 2
   weekly:
