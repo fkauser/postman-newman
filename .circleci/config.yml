@@ -2,9 +2,12 @@ version: 2.1
 orbs:
   newman: postman/newman@0.0.2
 
-
+image: docker:stable
+ 
 commands:
   active_scan:
+    before_script:
+     - apk add --update curl && rm -rf /var/cache/apk/*
     steps:
       - run:
           name: Download jq
@@ -14,7 +17,6 @@ jobs:
     executor: newman/postman-newman-docker
     steps:
       - checkout
-      - active_scan
       - newman/newman-run:
           collection: ./test/postman_collection.json
           ignore-redirects: true
