@@ -7,7 +7,7 @@
   },
   
   "script" : {
-    "api-tests-production": "newman run test/postman_collection.json",
+    "start": "/test/postman_collection.json",
     "report": "npx newman run /test/postman_collection.json -r htmlextra"
 },
   
