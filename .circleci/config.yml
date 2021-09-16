@@ -28,6 +28,10 @@ jobs:
       - store_artifacts:
           path: api/test-results/newman
           
+      - run:
+          name: Set template variables
+          command: |
+           echo "export API_ARTIFACT_URL=https://${CIRCLE_BUILD_NUM}-404629133-gh.circle-artifacts.com/0/$(ls api/test-results/newman/newman-run-report-*.json)" >> $BASH_ENV
      
            
       - slack/notify:
@@ -64,6 +68,16 @@ jobs:
                  {
                   "type": "actions",
                   "elements": [
+                  
+                   {
+                      "type": "button",
+                      "text": {
+                        "type": "plain_text",
+                        "text": "View Full Report"
+                      },
+                      "style": "primary",
+                      "url": "${API_ARTIFACT_URL}"
+                    },
                     
                     {
                       "type": "button",
