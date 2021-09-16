@@ -16,7 +16,7 @@ jobs:
       - store_test_results:
           path: test-results/mocha
       - store_artifacts:
-          path: test-results/newman/newman-results.html
+          path: test-results/newman/newman-results-report.html
 
 workflows:
   newman-and-monitor:
