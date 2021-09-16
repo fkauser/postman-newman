@@ -7,7 +7,7 @@
   },
   
   "script" : {
-    "report": "npx newman run ./test/postman_collection.json -r htmlextra"
+    "report": "npx newman run /test/postman_collection.json -r htmlextra"
 },
   
   "author": "faisalk",
