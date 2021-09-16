@@ -1,3 +1,4 @@
+
 version: 2.1
 orbs:
   newman: postman/newman@0.0.2
@@ -6,15 +7,19 @@ orbs:
   
 jobs:
   build:
+    executor: newman/postman-newman-docker
     steps:
-    - run:
-        command: echo "Hello ${CIRCLE_USERNAME}"
-       
-    - run:
+     
+      - run:
           name: MY ECO MESSAGE
           command: |
             echo "***my artifact files ***" 
+            
+      - run:
+        command: echo "Hello ${CIRCLE_USERNAME}"
      
-  
+    
+    
+
            
  
