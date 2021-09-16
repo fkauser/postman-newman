@@ -6,9 +6,7 @@ orbs:
   
 jobs:
   build:
-    executor: newman/postman-newman-docker
     steps:
-     
       - run:
           name: MY ECO MESSAGE
           command: |
