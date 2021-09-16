@@ -30,7 +30,10 @@ jobs:
                     "image_url": "https://cdn-icons-png.flaticon.com/512/603/603197.png",
                     "alt_text": "Postman"
                   }
-                }
+                },
+                {
+                    "type": "divider"
+                 },
                     
               ]
             }
