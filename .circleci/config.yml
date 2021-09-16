@@ -17,9 +17,6 @@ jobs:
           ignore-redirects: true
           additional-options: -r cli,junit,json,htmlextra  
      
-      - run:
-          name: Install Dependencies
-          command: install -g newman-reporter-htmlextra
    
 
       - run:
