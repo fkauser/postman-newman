@@ -7,7 +7,6 @@
   },
   
   "script" : {
-    "start": "/test/postman_collection.json",
     "report": "npx newman run /test/postman_collection.json -r htmlextra"
 },
   
