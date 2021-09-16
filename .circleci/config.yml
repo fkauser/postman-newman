@@ -14,8 +14,8 @@ jobs:
     steps:
     - run:
         command: echo "Hello ${CIRCLE_USERNAME}"
-        command: echo "Hello ${DOCKERHUB_PASSWORD}"
-      - run:
+       
+    - run:
           name: MY ECO MESSAGE
           command: |
             echo "***my artifact files ***" 
