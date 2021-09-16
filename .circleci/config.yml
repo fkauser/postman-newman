@@ -12,12 +12,48 @@ jobs:
             {
               "blocks": [
                 {
+                  "type": "header",
+                  "text": {
+                    "type": "plain_text",
+                    "text": "API test completed :ballot_box_with_check:",
+                    "emoji": true
+                  }
+                },
+                {
                   "type": "section",
-                  "fields": [
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "*Test*: https://gateway-ocr.openrm.dev\n"
+                  },
+                  "accessory": {
+                    "type": "image",
+                    "image_url": "https://cdn-icons-png.flaticon.com/512/603/603197.png",
+                    "alt_text": "Postman"
+                  }
+                },
+                 {
+                    "type": "divider"
+                 },
+                {
+                  "type": "actions",
+                  "elements": [
                     {
-                      "type": "plain_text",
-                      "text": "*This is a text notification*",
-                      "emoji": true
+                      "type": "button",
+                      "text": {
+                        "type": "plain_text",
+                        "text": "View Full Report"
+                      },
+                      "style": "primary",
+                      "url": "${API_ARTIFACT_URL}"
+                    },
+                    {
+                      "type": "button",
+                      "text": {
+                        "type": "plain_text",
+                        "text": "View Job"
+                      },
+                      "style": "primary",
+                      "url": "${CIRCLE_BUILD_URL}"
                     }
                   ]
                 }
