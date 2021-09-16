@@ -1,18 +1,61 @@
+
+
+https://medium.com/geekculture/custom-slack-notification-with-circleci-workflow-9f42d9b767d2
+
+
+
 version: 2.1
 orbs:
   newman: postman/newman@0.0.2
-  slack: circleci/slack@4.4.4
+  slack: circleci/slack@4.4
+ 
+commands:
+  notify_slack_error:
+    steps:
+      - slack/notify:
+          event: fail
+          template: basic_fail_1
+
+  notify_slack_pass:
+    steps:
+      - slack/notify:
+          event: pass
+          template: basic_success_1
+  
+  
+  trigger_slack_notification:
+    steps:
+      - slack/notify:
+          custom: |
+            {
+              "blocks": [
+                {
+                  "type": "section",
+                  "fields": [
+                    {
+                      "type": "plain_text",
+                      "text": "*This is a text notification*",
+                      "emoji": true
+                    }
+                  ]
+                }
+              ]
+            }
+          event: always
+  
 jobs:
   build:
+    docker:
+      - image: cimg/base:stable
     executor: newman/postman-newman-docker
     steps:
+      - trigger_slack_notification
       - checkout
       - newman/newman-run:
           collection: ./test/postman_collection.json
           ignore-redirects: true
-          additional-options: -r cli,junit,json  
-
-    
+          additional-options: -r cli,junit,json              
+           
       - run:
           name: Save Test Result
           command: |
@@ -22,96 +65,30 @@ jobs:
             cp ./newman/newman-run-report-*.json api/test-results/newman
             echo ${CIRCLE_BRANCH}
             echo ${CIRCLE_BUILD_NUM}
-            echo $(ls api/test-results/newman/newman-run-report-*.json)
-            
+       
          
-      
+      - store_test_results:
+          path: api/test-results
+          
       - store_artifacts:
           path: api/test-results/newman
           
+      - notify_slack_error
+      - notify_slack_pass
           
-      - run: apk update && apk add curl curl-dev
-      - run:
-          name: Download jq
-          command: curl -sLo /usr/local/bin/jq https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64 && chmod +x /usr/local/bin/jq    
-          
-     
-      - slack/notify:
-          channel: circleci
-          event: always
-          custom: |
-            {
-              "blocks": [
-                {
-                  "type": "header",
-                   "text": {
-                    "type": "plain_text",
-                    "text": "API test completed :ballot_box_with_check:",
-                    "emoji": true
-                   }
-                },
-                 {
-                  "type": "section",
-                  "text": {
-                    "type": "mrkdwn",
-                    "text": "*Test*: https://gateway-ocr.openrm.dev\n"
-                  },
-                  "accessory": {
-                    "type": "image",
-                    "image_url": "https://cdn-icons-png.flaticon.com/512/603/603197.png",
-                    "alt_text": "Postman"
-                  }
-                },
-                {
-                    "type": "divider"
-                 },
-                 
-                 
-                 {
-                  "type": "actions",
-                  "elements": [
-                  
-                   {
-                      "type": "button",
-                      "text": {
-                        "type": "plain_text",
-                        "text": "View Full Report"
-                      },
-                      "style": "primary",
-                      "url": "https://${CIRCLE_BUILD_NUM}-404629133-gh.circle-artifacts.com/0/$(ls api/test-results/newman/newman-run-report-*.json)"
-                    },
-                    
-                    {
-                      "type": "button",
-                      "text": {
-                        "type": "plain_text",
-                        "text": "View Job"
-                      },
-                      "style": "primary",
-                      "url": "${CIRCLE_BUILD_URL}"
-                    }
-                  ]
-                }
-                
-                    
-              ]
-            }
 workflows:
   version: 2
   weekly:
     triggers:
       - schedule:
-          cron: "45 4 * * 4" # At 04:00 on every Thursday
+          cron: "0 3 * * 4" # At 03:00 on Thursday https://crontab.guru/
           filters:
             branches:
               only:
                 - main
     jobs:
-      - build:
-          context: slack
+      - build
+
   manual:
     jobs:
-      - build:
-          context: slack
-      
-   
+      - build
