@@ -1,13 +1,10 @@
 
-
-https://medium.com/geekculture/custom-slack-notification-with-circleci-workflow-9f42d9b767d2
-
-
+# https://medium.com/geekculture/custom-slack-notification-with-circleci-workflow-9f42d9b767d2
 
 version: 2.1
 orbs:
   newman: postman/newman@0.0.2
-  slack: circleci/slack@4.4
+  slack: circleci/slack@4.4.4
  
 commands:
   notify_slack_error:
@@ -34,7 +31,7 @@ commands:
                   "fields": [
                     {
                       "type": "plain_text",
-                      "text": "*This is a text notification*",
+                      "text": "*THIS IS A TEXT NOTIFICCATION SLACK 2*",
                       "emoji": true
                     }
                   ]
@@ -42,11 +39,10 @@ commands:
               ]
             }
           event: always
+          channel: circleci
   
 jobs:
   build:
-    docker:
-      - image: cimg/base:stable
     executor: newman/postman-newman-docker
     steps:
       - trigger_slack_notification
@@ -56,39 +52,28 @@ jobs:
           ignore-redirects: true
           additional-options: -r cli,junit,json              
            
-      - run:
-          name: Save Test Result
-          command: |
-            echo "***my artifact files ***" 
-            mkdir -p api/test-results/newman
-            cp ./newman/newman-run-report-*.xml api/test-results/newman
-            cp ./newman/newman-run-report-*.json api/test-results/newman
-            echo ${CIRCLE_BRANCH}
-            echo ${CIRCLE_BUILD_NUM}
-       
+  #    - run:
+   #       name: Save Test Result
+   #       command: |
+    #        echo "***my artifact files ***" 
+     #       mkdir -p api/test-results/newman
+      #      cp ./newman/newman-run-report-*.xml api/test-results/newman
+       #     cp ./newman/newman-run-report-*.json api/test-results/newman
+        #    echo ${CIRCLE_BRANCH}
+         #   echo ${CIRCLE_BUILD_NUM}
+     
          
-      - store_test_results:
-          path: api/test-results
+  #    - store_test_results:
+   #       path: api/test-results
           
-      - store_artifacts:
-          path: api/test-results/newman
+   #   - store_artifacts:
+    #      path: api/test-results/newman
           
       - notify_slack_error
       - notify_slack_pass
           
 workflows:
   version: 2
-  weekly:
-    triggers:
-      - schedule:
-          cron: "0 3 * * 4" # At 03:00 on Thursday https://crontab.guru/
-          filters:
-            branches:
-              only:
-                - main
-    jobs:
-      - build
-
-  manual:
+   manual:
     jobs:
       - build
