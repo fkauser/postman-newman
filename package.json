@@ -5,9 +5,11 @@
   "directories": {
     "test": "test"
   },
-  "scripts": {
-    "api-tests-production": "newman run test/postman_collection.json"
-  },
+  
+  "script" : {
+    "report": "npx newman run test/postman_collection.json -r htmlextra"
+}
+  
   "author": "faisalk",
   "dependencies": {
     "newman": "^5.3.0"
