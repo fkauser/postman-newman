@@ -33,7 +33,33 @@ jobs:
                 },
                 {
                     "type": "divider"
-                 }
+                 },
+                 
+                 
+                 {
+                  "type": "actions",
+                  "elements": [
+                    {
+                      "type": "button",
+                      "text": {
+                        "type": "plain_text",
+                        "text": "View Full Report"
+                      },
+                      "style": "primary",
+                      "url": "https://www.google.com/"
+                    },
+                    {
+                      "type": "button",
+                      "text": {
+                        "type": "plain_text",
+                        "text": "View Job"
+                      },
+                      "style": "primary",
+                      "url": "https://www.google.com/"
+                    }
+                  ]
+                }
+                
                     
               ]
             }
