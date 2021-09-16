@@ -11,12 +11,12 @@ jobs:
      
       - run:
           name: Download jq
-          #command: curl -sLo /usr/local/bin/jq https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64 && chmod +x /usr/local/bin/jq
-          echo "***F**"
+          command: |
+            echo "***my artifact files ***" 
      
       - checkout
-      - newman/newman-run:
-          collection: ./test/postman_collection.json
+    #  - newman/newman-run:
+      #    collection: ./test/postman_collection.json
        
            
  
