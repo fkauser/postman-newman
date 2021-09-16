@@ -29,12 +29,13 @@ jobs:
       - store_artifacts:
           path: api/test-results/newman
           
+          
+      - run: apk update && apk add curl curl-dev
       - run:
-          name: Set template variables
-          command: |
-           echo "export API_ARTIFACT_URL=https://${CIRCLE_BUILD_NUM}-404629133-gh.circle-artifacts.com/0/$(ls api/test-results/newman/newman-run-report-*.json)" >> $BASH_ENV
-            API_ARTIFACT_URL = "https://${CIRCLE_BUILD_NUM}-404629133-gh.circle-artifacts.com/0/$(ls api/test-results/newman/newman-run-report-*.json)"
-            echo  ${API_ARTIFACT_URL}
+          name: Download jq
+          command: curl -sLo /usr/local/bin/jq https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64 && chmod +x /usr/local/bin/jq    
+          
+     
       - slack/notify:
           channel: test-reports
           event: always
@@ -77,7 +78,7 @@ jobs:
                         "text": "View Full Report"
                       },
                       "style": "primary",
-                      "url": "${API_ARTIFACT_URL}"
+                      "url": "https://${CIRCLE_BUILD_NUM}-404629133-gh.circle-artifacts.com/0/$(ls api/test-results/newman/newman-run-report-*.json)"
                     },
                     
                     {
