@@ -20,7 +20,7 @@ jobs:
             - ./node_modules
       - run:
           name: Generate Report
-          command: npm run report
+          command: npm run-script report
       - store_artifacts:
           path: ~/repo/newman
       
