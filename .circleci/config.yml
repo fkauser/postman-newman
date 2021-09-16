@@ -33,7 +33,7 @@ jobs:
                 },
                 {
                     "type": "divider"
-                 },
+                 }
                     
               ]
             }
