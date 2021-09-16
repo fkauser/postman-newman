@@ -47,7 +47,7 @@ jobs:
   build:
     executor: newman/postman-newman-docker
     steps:
-      #- trigger_slack_notification
+      - trigger_slack_notification
       - checkout
       - newman/newman-run:
           collection: ./test/postman_collection.json
