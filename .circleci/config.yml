@@ -47,6 +47,10 @@ jobs:
   build:
     executor: newman/postman-newman-docker
     steps:
+      - run: apk update && apk add curl curl-dev
+      - run:
+          name: Download jq
+          command: curl -sLo /usr/local/bin/jq https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64 && chmod +x /usr/local/bin/jq
       - trigger_slack_notification
       - checkout
       - newman/newman-run:
@@ -71,10 +75,7 @@ jobs:
    #   - store_artifacts:
     #      path: api/test-results/newman
          
-      - run: apk update && apk add curl curl-dev
-      - run:
-          name: Download jq
-          command: curl -sLo /usr/local/bin/jq https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64 && chmod +x /usr/local/bin/jq
+
          
       - notify_slack_error
       - notify_slack_pass
