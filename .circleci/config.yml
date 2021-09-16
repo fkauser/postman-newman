@@ -1,31 +1,26 @@
-
 version: 2.1
-orbs:
-  newman: postman/newman@0.0.2
-  slack: circleci/slack@4.4.4
- 
-  
 jobs:
   build:
-    executor: newman/postman-newman-docker
+    working_directory: ~/repo
+    docker:
+      - image: cimg/node:16.8.0
     steps:
-     
+      - checkout
       - run:
-          name: MY ECO MESSAGE
-          command: |
-            echo "***my artifact files ***" 
-            echo "Hello ${CIRCLE_USERNAME}"
-            echo "TRIGGERER: ${CIRCLE_USERNAME}"
-            echo "BUILD_NUMBER: ${CIRCLE_BUILD_NUM}"
-            echo "BUILD_URL: ${CIRCLE_BUILD_URL}"
-            echo "BRANCH: ${CIRCLE_BRANCH}"
-            echo "RUNNING JOB: ${CIRCLE_JOB}"
-            echo "JOB PARALLELISM: ${CIRCLE_NODE_TOTAL}"
-            echo "CIRCLE_REPOSITORY_URL: ${CIRCLE_REPOSITORY_URL}"
-            
-     
-    
-    
-
-           
- 
+          name: Update NPM
+          command: "sudo npm install -g npm@5"
+      - restore_cache:
+          key: dependency-cache-{{ checksum "package-lock.json" }}
+      - run:
+          name: Install Dependencies
+          command: npm install
+      - save_cache:
+          key: dependency-cache-{{ checksum "package-lock.json" }}
+          paths:
+            - ./node_modules
+      - run:
+          name: Generate Report
+          command: npm run report
+      - store_artifacts:
+          path: ~/repo/newman
+      
