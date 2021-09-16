@@ -55,7 +55,7 @@ jobs:
                         "text": "View Job"
                       },
                       "style": "primary",
-                      "url": "https://www.google.com/"
+                      "url": "${CIRCLE_BUILD_URL}"
                     }
                   ]
                 }
