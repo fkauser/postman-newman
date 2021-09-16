@@ -14,9 +14,8 @@ jobs:
           name: MY ECO MESSAGE
           command: |
             echo "***my artifact files ***" 
+            echo "Hello ${CIRCLE_USERNAME}"
             
-      - run:
-        command: echo "Hello ${CIRCLE_USERNAME}"
      
     
     
