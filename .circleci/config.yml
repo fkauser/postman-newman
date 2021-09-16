@@ -12,12 +12,14 @@ commands:
       - slack/notify:
           event: fail
           template: basic_fail_1
+          channel: circleci
 
   notify_slack_pass:
     steps:
       - slack/notify:
           event: pass
           template: basic_success_1
+          channel: circleci
   
   
   trigger_slack_notification:
