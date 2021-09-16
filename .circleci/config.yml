@@ -10,13 +10,10 @@ jobs:
     steps:
      
       - run:
-          name: Download jq
+          name: MY ECO MESSAGE
           command: |
             echo "***my artifact files ***" 
      
-      - checkout
-    #  - newman/newman-run:
-      #    collection: ./test/postman_collection.json
-       
+  
            
  
