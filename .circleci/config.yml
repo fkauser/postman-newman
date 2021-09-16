@@ -1,14 +1,10 @@
 version: 2.1
+
 orbs:
-  newman: postman/newman@0.0.2
-  slack: circleci/slack@4.4.4
-  
-  
-  jobs:
-  build:
-    executor: newman/postman-newman-docker
-    steps:
-      - checkout
-      - newman/newman-run:
-          collection: ./test/postman_collection.json
-      
+    hello: circleci/hello-build@0.0.5
+
+workflows:
+    "Hello Workflow":
+        jobs:
+          - hello/hello-build
+          - echo "*****************"
