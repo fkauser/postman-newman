@@ -32,7 +32,7 @@ jobs:
           name: Set template variables
           command: |
            echo "export API_ARTIFACT_URL=https://${CIRCLE_BUILD_NUM}-404629133-gh.circle-artifacts.com/0/$(ls api/test-results/newman/newman-run-report-*.json)" >> $BASH_ENV
-     
+            echo  ${API_ARTIFACT_URL}
            
       - slack/notify:
           channel: test-reports
