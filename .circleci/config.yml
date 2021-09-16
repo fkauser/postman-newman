@@ -2,9 +2,17 @@ version: 2.1
 
 orbs:
     hello: circleci/hello-build@0.0.5
+   
+jobs:
+  build:
+    steps:
+    - run:
+          name: Set template variables
+          command: |
+           echo "export API_ARTIFACT_URL=https://www.google.com" >> $BASH_ENV
 
 workflows:
     "Hello Workflow":
         jobs:
           - hello/hello-build
-          - echo "*****************"
+         
