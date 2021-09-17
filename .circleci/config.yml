@@ -3,7 +3,7 @@ jobs:
   build:
    # working_directory: ~/repo
     docker:
-     # - image: circleci/node:10.16.3
+      - image: circleci/node:10.16.3
       - image: cimg/node:16.8.0
     steps:
       - checkout
@@ -22,6 +22,7 @@ jobs:
       - run:
           name: Generate Report
           command: npm run-script report
+          
       - store_artifacts:
-          path: ~/repo/newman
+          path: api/test-results/newman
       
