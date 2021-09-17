@@ -6,14 +6,10 @@ orbs:
 jobs:
   build:
     docker:
-      
       - image: owasp/zap2docker-weekly
       - image: circleci/node:10.16.3
-      
     steps:
-
       - checkout                        
-      
       - run:
           name: Update NPM
           command: "sudo npm install -g npm@5"
@@ -30,7 +26,7 @@ jobs:
           name: Generate Report
           command: npm run-script report
        
-       - run:
+      - run:
           name: Download jq
           command: curl -sLo jq https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64 && chmod +x ./jq
      
