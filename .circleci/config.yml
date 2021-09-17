@@ -87,8 +87,7 @@ jobs:
                         "text": "View Full Report"
                       },
                       "style": "primary",
-                     # "url": "https://${CIRCLE_BUILD_NUM}-404629133-gh.circle-artifacts.com/0/$(ls api/test-results/newman/API_Configuration-*.html)"
-                       "url": "https://${CIRCLE_BUILD_NUM}-405850638-gh.circle-artifacts.com/0/$(ls api/test-results/newman/API_Configuration-*.html)"
+                         "url": "https://${CIRCLE_BUILD_NUM}-405850638-gh.circle-artifacts.com/0/$(ls api/test-results/newman/API_Configuration-*.html)"
                       
                     },
                     
