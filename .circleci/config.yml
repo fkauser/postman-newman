@@ -7,7 +7,7 @@ jobs:
   build:
     docker:
       
-      - image: curlimages/curl
+    #  - image: curlimages/curl
       - image: circleci/node:10.16.3
       
     steps:
