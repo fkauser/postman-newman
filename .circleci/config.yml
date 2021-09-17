@@ -117,7 +117,16 @@ jobs:
                     
               ]
             }
-
+workflows:
+  version: 2
+  weekly:
+    triggers:
+      - schedule:
+          cron: "0 4 * * 4" # At 04:00 on every Thursday
+          filters:
+            branches:
+              only:
+                - main
   manual:
     jobs:
       - test:
