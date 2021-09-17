@@ -24,5 +24,5 @@ jobs:
           command: npm run-script report
           
       - store_artifacts:
-          path: api/test-results/newman
+          path: ~/api/test-results/newman
       
