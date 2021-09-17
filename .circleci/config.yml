@@ -5,7 +5,7 @@ jobs:
   build:
     docker:
       - image: circleci/node:10.16.3
-      - image: cimg/node:16.8.0
+      
     steps:
       - checkout
       - run:
@@ -24,6 +24,10 @@ jobs:
           name: Generate Report
           command: npm run-script report
           
+      - run: apk update && apk add curl curl-dev
+      - run:
+          name: Download jq
+          command: curl -sLo /usr/local/bin/jq https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64 && chmod +x /usr/local/bin/jq   
       - run:
           name: Save Test Result
           command: |
@@ -39,10 +43,7 @@ jobs:
       - store_artifacts:
           path: api/test-results/newman
           
-      - run: apk update && apk add curl curl-dev
-      - run:
-          name: Download jq
-          command: curl -sLo /usr/local/bin/jq https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64 && chmod +x /usr/local/bin/jq
+      
           
       - slack/notify:
           channel: circleci
