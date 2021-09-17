@@ -6,7 +6,6 @@ orbs:
 jobs:
   build:
     docker:
-      - image: owasp/zap2docker-weekly
       - image: circleci/node:10.16.3
     steps:
       - checkout                        
