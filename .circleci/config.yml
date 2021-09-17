@@ -1,13 +1,14 @@
 version: 2.1
 orbs:
   slack: circleci/slack@4.4.4
-
+  newman: postman/newman@0.0.2
 
   
 jobs:
   test:
     executor: newman/postman-newman-docker
     steps:
+      - checkout
       - run: apk update && apk add curl curl-dev 
       - run:
           name: Download jq
