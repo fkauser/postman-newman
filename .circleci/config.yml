@@ -1,8 +1,7 @@
 version: 2.1
 orbs:
   slack: circleci/slack@4.4.4
-
-  
+ 
 jobs:
   build:
     docker:
@@ -23,7 +22,7 @@ jobs:
             - ./node_modules
       - run:
           name: Generate Report
-          command: npm run-script report
+          command: npm run-script report  #package.json
        
       - run:
           name: Download jq
@@ -50,61 +49,55 @@ jobs:
           event: always
           custom: |
             {
-              "blocks": [
-                {
-                  "type": "header",
-                   "text": {
-                    "type": "plain_text",
-                    "text": "API test completed :ballot_box_with_check:",
-                    "emoji": true
-                   }
-                },
-                 {
-                  "type": "section",
-                  "text": {
-                    "type": "mrkdwn",
-                    "text": "*Test*: https://gateway-ocr.openrm.dev\n"
-                  },
-                  "accessory": {
-                    "type": "image",
-                    "image_url": "https://cdn-icons-png.flaticon.com/512/603/603197.png",
-                    "alt_text": "Postman"
-                  }
-                },
-                {
-                    "type": "divider"
-                 },
-                 
-                 
-                 {
-                  "type": "actions",
-                  "elements": [
-                  
-                   {
-                      "type": "button",
-                      "text": {
-                        "type": "plain_text",
-                        "text": "View Full Report"
-                      },
-                      "style": "primary",
-                         "url": "https://${CIRCLE_BUILD_NUM}-405850638-gh.circle-artifacts.com/0/$(ls api/test-results/newman/API_Configuration-*.html)"
-                      
-                    },
-                    
-                    {
-                      "type": "button",
-                      "text": {
-                        "type": "plain_text",
-                        "text": "View Job"
-                      },
-                      "style": "primary",
-                      "url": "${CIRCLE_BUILD_URL}"
-                    }
-                  ]
-                }
-                
-                    
-              ]
+             	"blocks": [
+            		{
+            			"type": "section",
+            			"text": {
+            				"type": "mrkdwn",
+            				"text": "*API Test Completed* :ballot_box_with_check:"
+            			}
+            		},
+            		{
+            			"type": "section",
+            			"text": {
+            				"type": "mrkdwn",
+            				"text": "*Test:* https://gateway-ocr.openrm.dev\n*BRANCH:* ${CIRCLE_BRANCH}\n*RUNNING JOB:* ${CIRCLE_JOB}\n*JOB PARALLELISM:* ${CIRCLE_NODE_TOTAL}"
+            			},
+            			"accessory": {
+            				"type": "image",
+            				"image_url": "https://cdn-icons-png.flaticon.com/512/603/603197.png",
+            				"alt_text": "Postman"
+            			}
+            		},
+            		{
+            			"type": "divider"
+            		},
+            		{
+            			"type": "actions",
+            			"elements": [
+            				{
+            					"type": "button",
+            					"text": {
+            						"type": "plain_text",
+            						"emoji": true,
+            						"text": "View Full Report"
+            					},
+            					"style": "primary",
+            					"url": "https://${CIRCLE_BUILD_NUM}-405850638-gh.circle-artifacts.com/0/$(ls api/test-results/newman/API_Configuration-*.html)"
+            				},
+            				{
+            					"type": "button",
+            					"text": {
+            						"type": "plain_text",
+            						"emoji": true,
+            						"text": "View Job"
+            					},
+            					"style": "danger",
+            					"url": "${CIRCLE_BUILD_URL}"
+            				}
+            			]
+            		}
+            	]
             }
          
           
