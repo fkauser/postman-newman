@@ -1,6 +1,10 @@
 version: 2.1
 orbs:
   slack: circleci/slack@4.4.4
+
+command:
+  name: json package
+  run: apk update && apk add curl curl-dev 
 jobs:
   build:
     docker:
@@ -24,7 +28,7 @@ jobs:
           name: Generate Report
           command: npm run-script report
           
-     # - run: apk update && apk add curl curl-dev
+     
       - run:
           name: Download jq
           command: curl -sLo /usr/local/bin/jq https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64 && chmod +x /usr/local/bin/jq   
@@ -107,22 +111,8 @@ jobs:
                     
               ]
             }
-workflows:
-  version: 2
-  weekly:
-    triggers:
-      - schedule:
-          cron: "0 4 * * 4" # At 04:00 on every Thursday
-          filters:
-            branches:
-              only:
-                - main
-    jobs:
-      - build:
-          context: slack
-  manual:
-    jobs:
-      - build:
-          context: slack
-          
+
+
+            
+
       
