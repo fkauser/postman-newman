@@ -126,7 +126,12 @@ workflows:
           filters:
             branches:
               only:
-                - main
+                - master
+    jobs:
+      - test:
+          context: slack
+      - build:
+          context: slack
   manual:
     jobs:
       - test:
