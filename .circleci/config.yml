@@ -20,6 +20,10 @@ jobs:
           key: dependency-cache-{{ checksum "package-lock.json" }}
           paths:
             - ./node_modules
+            
+       - run:
+          name: cache clean
+          command: npm cache clean --force     
       - run:
           name: Generate Report
           command: npm run-script report  #package.json
