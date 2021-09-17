@@ -5,10 +5,50 @@ orbs:
 
   
 jobs:
+  build:
+    docker:
+      - image: circleci/node:10.16.3
+   
+      
+    steps:
+      - checkout
+      - run:
+          name: Update NPM
+          command: "sudo npm install -g npm@5"
+      - restore_cache:
+          key: dependency-cache-{{ checksum "package-lock.json" }}
+      - run:
+          name: Install Dependencies
+          command: npm install
+      - save_cache:
+          key: dependency-cache-{{ checksum "package-lock.json" }}
+          paths:
+            - ./node_modules
+      - run:
+          name: Generate Report
+          command: npm run-script report
+          
+     
+      - run:
+          name: Save Test Result
+          command: |
+            echo "***my artifact files ***" 
+            mkdir -p api/test-results/newman
+            cp ./newman/newman-run-report-*.xml api/test-results/newman
+            cp ./newman/newman-run-report-*.json api/test-results/newman
+            cp ./newman/API_Configuration-*.html api/test-results/newman
+            
+      - store_test_results:
+          path: api/test-results
+          
+      - store_artifacts:
+          path: api/test-results/newman
+          
+    
   test:
     executor: newman/postman-newman-docker
     steps:
-      - checkout
+      
       - run: apk update && apk add curl curl-dev 
       - run:
           name: Download jq
@@ -76,48 +116,7 @@ jobs:
                     
               ]
             }
-          
-  
-  build:
-    docker:
-      - image: circleci/node:10.16.3
-   
-      
-    steps:
-      - checkout
-      - run:
-          name: Update NPM
-          command: "sudo npm install -g npm@5"
-      - restore_cache:
-          key: dependency-cache-{{ checksum "package-lock.json" }}
-      - run:
-          name: Install Dependencies
-          command: npm install
-      - save_cache:
-          key: dependency-cache-{{ checksum "package-lock.json" }}
-          paths:
-            - ./node_modules
-      - run:
-          name: Generate Report
-          command: npm run-script report
-          
-     
-      - run:
-          name: Save Test Result
-          command: |
-            echo "***my artifact files ***" 
-            mkdir -p api/test-results/newman
-            cp ./newman/newman-run-report-*.xml api/test-results/newman
-            cp ./newman/newman-run-report-*.json api/test-results/newman
-            cp ./newman/API_Configuration-*.html api/test-results/newman
-            
-      - store_test_results:
-          path: api/test-results
-          
-      - store_artifacts:
-          path: api/test-results/newman
-          
-      
+         
           
 
 workflows:
