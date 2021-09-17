@@ -21,7 +21,7 @@ jobs:
           paths:
             - ./node_modules
             
-       - run:
+      - run:
           name: cache clean
           command: npm cache clean --force     
       - run:
