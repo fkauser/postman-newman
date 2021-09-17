@@ -1,24 +1,24 @@
 version: 2.1
 orbs:
   slack: circleci/slack@4.4.4
-  newman: postman/newman@0.0.2
 
   
 jobs:
   build:
     docker:
+      
+      - image: curlimages/curl
       - image: circleci/node:10.16.3
-      - image: cimg/php:8.0.10
-   
       
     steps:
 
+      - checkout
       - run: apk update && apk add curl curl-dev 
       - run:
           name: Download jq
           command: curl -sLo /usr/local/bin/jq https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64 && chmod +x /usr/local/bin/jq   
           
-      - checkout
+      
       - run:
           name: Update NPM
           command: "sudo npm install -g npm@5"
