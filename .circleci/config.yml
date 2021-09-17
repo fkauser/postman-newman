@@ -13,7 +13,7 @@ jobs:
     steps:
 
       - checkout
-     # - run: apk update && apk add curl curl-dev 
+      - run: apk update && apk add curl curl-dev 
       - run:
           name: Download jq
           command: curl -sLo /usr/local/bin/jq https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64 && chmod +x /usr/local/bin/jq   
