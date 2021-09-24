@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    	"report": "npx newman run ForestApp_api_collection.json -r htmlextra,json,junit"
+    	"report": ""
   },
   "keywords": [],
   "author": "",
