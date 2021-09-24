@@ -26,7 +26,7 @@ jobs:
           command: npm cache clean --force     
       - run:
           name: Generate Report
-          command: $(npm bin)/  newman run ForestApp_api_collection.json --ignore-redirects -r htmlextra,json,junit --reporter-htmlextra-logs --reporter-htmlextra-skipHeaders "Authorization,Cookie,set-cookie,location" --reporter-htmlextra-skipSensitiveData
+          command: $(npm bin)/newman run test/postman_collection.json --ignore-redirects -r htmlextra,json,junit --reporter-htmlextra-logs --reporter-htmlextra-skipHeaders "Authorization,Cookie,set-cookie,location" --reporter-htmlextra-skipSensitiveData
        
       - run:
           name: Download jq
