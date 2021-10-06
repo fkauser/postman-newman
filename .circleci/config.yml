@@ -111,7 +111,7 @@ workflows:
   weekly:
     triggers:
       - schedule:
-          cron: "" #  "0 4 * * 4"  At 04:00 on every Thursday
+          cron: "0 1 31 8 *" #  At 01:00 on day-of-month 31 in August. https://crontab.guru/
           filters:
             branches:
               only:
