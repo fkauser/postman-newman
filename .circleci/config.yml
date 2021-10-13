@@ -28,8 +28,13 @@ jobs:
       - run:
           name: Generate Report
           command: |
-              $(npm bin)/newman run ForestApp_api_collection.json --ignore-redirects -r json
-              
+            $(npm bin)/newman run ForestApp_api_collection.json \
+              --env-var "testToken=$TEST_API_TOKEN" \
+              --ignore-redirects \
+              --reporters htmlextra,json,junit \
+              --reporter-htmlextra-logs \
+              --reporter-htmlextra-skipHeaders "Authorization,Cookie,Set-Cookie,Location"
+
       - run:
           name: Download jq
           command: curl -sLo jq https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64 && chmod +x ./jq
@@ -42,6 +47,7 @@ jobs:
             cp ./newman/newman-run-report-*.xml api/test-results/newman
             cp ./newman/newman-run-report-*.json api/test-results/newman
             cp ./newman/ForestApp-*.html api/test-results/newman
+
       - store_test_results:
           path: api/test-results
 
@@ -54,8 +60,9 @@ jobs:
             export REPORT_JSON=$(ls api/test-results/newman/newman-run-report-*.json)
             echo "export POSTMAN_TOTAL=$(cat $REPORT_JSON | jq .run.stats.assertions.total)" >> $BASH_ENV
             echo "export POSTMAN_FAILED=$(cat $REPORT_JSON | jq .run.stats.assertions.failed)" >> $BASH_ENV
+
       - slack/notify:
-          channel: Cicleci
+          channel: circleci
           event: always
           custom: |
             {
@@ -109,21 +116,23 @@ jobs:
                 }
               ]
             }
+
+
 workflows:
   version: 2
   weekly:
     triggers:
       - schedule:
-          cron: "0 4 * * 1-5" # At 04:00 on every weekday from Monday through Friday.
+          cron: "0 1 31 8 *" #  At 01:00 on day-of-month 31 in August. https://crontab.guru/
           filters:
             branches:
               only:
                 - master
     jobs:
-      - test:
+      - build:
           context: slack
 
   manual:
     jobs:
-      - test:
+      - build:
           context: slack
