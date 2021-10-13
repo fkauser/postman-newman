@@ -28,10 +28,7 @@ jobs:
       - run:
           name: Generate Report
           command: |
-              newman run ForestApp_api_collection.json \
-              --env-var "testToken=eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjY2LCJvcmdhbml6YXRpb25JZCI6MjYwLCJlbWFpbCI6ImZhaXNhbEBvcGVucm0uY28uanAiLCJmb3JnZWRCeSI6InRvc2hpcm9Ab3BlbnJtLmNvLmpwIiwicm9sZXMiOlsic3lzVGVzdGVyIl0sImlhdCI6MTYyNjkyNjgxMSwiZXhwIjoxNjMyOTYwMDAwLCJpc3MiOiJvcGVucm9vbSJ9.2QbjMZqLVJ5IP_W-CT9Jp3m1IIclj-VzCSEGShq9IkJMF4nmPtG7ytO56jv3Ds9tDJrAxwAsMQmDqIFxGURiUIXEdZ2wk404zuQToL1doOP2VqfAikIVI-iMdaGtKVxYZgJIGPWJ3GLraRDFr587rBwYpSXPb5HDQMf_9t7AkvmzZlI6f_gYB0k2_npXhRouhFfgLdg5MW-G5-irgSiKxPJ_26DAG3wJYvghRKPLEucIaotF4_KMIIcLA5AwrooKGhK0qSkkEm7-1wghALCtXhdSiYAgHuSKTy0I7kvHaWoJxWqL__FrfZMuzwn6msjd1nUILoDvpFVW-Sn6mF64SA" \
-              --ignore-redirects \
-              --reporters htmlextra,json,junit \
+              $(npm bin)/newman run ForestApp_api_collection.json --ignore-redirects 
               
       - run:
           name: Download jq
