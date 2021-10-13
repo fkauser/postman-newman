@@ -28,7 +28,7 @@ jobs:
       - run:
           name: Generate Report
           command: |
-              $(npm bin)/newman run ForestApp_api_collection.json --ignore-redirects 
+              $(npm bin)/newman run ForestApp_api_collection.json --ignore-redirects --reporters htmlextra,json
               
       - run:
           name: Download jq
