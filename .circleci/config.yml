@@ -1,60 +1,81 @@
 version: 2.1
 orbs:
-  newman: postman/newman@0.0.2
   slack: circleci/slack@4.4.4
+
 jobs:
-  build:
-    executor: newman/postman-newman-docker
+  test:
+    docker:
+      - image: circleci/node:10.16.3
     steps:
       - checkout
-      - newman/newman-run:
-          collection: ./test/postman_collection.json
-          ignore-redirects: true
-          additional-options: -r cli,junit,json  
-
-    
       - run:
-          name: Save Test Result
+          name: Update NPM
+          command: "sudo npm install -g npm@5"
+      - restore_cache:
+          key: dependency-cache-{{ checksum "package-lock.json" }}
+      - run:
+          name: Install Dependencies
+          command: npm install
+      - save_cache:
+          key: dependency-cache-{{ checksum "package-lock.json" }}
+          paths:
+            - ./node_modules
+
+      - run:
+          name: cache clean
+          command: npm cache clean --force
+
+      - run:
+          name: Generate Report
           command: |
-            echo "***my artifact files ***" 
+            $(npm bin)/newman run ForestApp_api_collection.json \
+              --env-var "testToken=$TEST_API_TOKEN" \
+              --ignore-redirects \
+              --reporters htmlextra,json,junit \
+              --reporter-htmlextra-logs \
+              --reporter-htmlextra-skipHeaders "Authorization,Cookie,Set-Cookie,Location"
+      - run:
+          name: Download jq
+          command: curl -sLo jq https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64 && chmod +x ./jq
+
+      - run:
+          name: Save Test Reports
+          command: |
+            echo "*** my artifact reports ***"
             mkdir -p api/test-results/newman
             cp ./newman/newman-run-report-*.xml api/test-results/newman
             cp ./newman/newman-run-report-*.json api/test-results/newman
-            echo ${CIRCLE_BRANCH}
-            echo ${CIRCLE_BUILD_NUM}
-            echo $(ls api/test-results/newman/newman-run-report-*.json)
-            
-         
-      
+            cp ./newman/ForestApp-*.html api/test-results/newman
+      - store_test_results:
+          path: api/test-results
+
       - store_artifacts:
           path: api/test-results/newman
-          
-          
-      - run: apk update && apk add curl curl-dev
+
       - run:
-          name: Download jq
-          command: curl -sLo /usr/local/bin/jq https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64 && chmod +x /usr/local/bin/jq    
-          
-     
+          name: Set template variables
+          command: |
+            export REPORT_JSON=$(ls api/test-results/newman/newman-run-report-*.json)
+            echo "export POSTMAN_TOTAL=$(cat $REPORT_JSON | jq .run.stats.assertions.total)" >> $BASH_ENV
+            echo "export POSTMAN_FAILED=$(cat $REPORT_JSON | jq .run.stats.assertions.failed)" >> $BASH_ENV
       - slack/notify:
-          channel: circleci
+          channel: Cicleci
           event: always
           custom: |
             {
               "blocks": [
                 {
-                  "type": "header",
-                   "text": {
-                    "type": "plain_text",
-                    "text": "API test completed :ballot_box_with_check:",
-                    "emoji": true
-                   }
-                },
-                 {
                   "type": "section",
                   "text": {
                     "type": "mrkdwn",
-                    "text": "*Test*: https://gateway-ocr.openrm.dev\n"
+                    "text": "*API Test Completed* $(if [ \"$CCI_STATUS\" = \"pass\" ]; then echo :ballot_box_with_check:; else echo :warning:; fi)"
+                  }
+                },
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "*Test:* https://gateway-ocr.openrm.dev\n*Branch:* ${CIRCLE_BRANCH}\n*Running Job:* ${CIRCLE_JOB}\n*Job Parallelism:* ${CIRCLE_NODE_TOTAL}\n*Result:* ${CCI_STATUS}\n*Assertions:* total=${POSTMAN_TOTAL} failed=${POSTMAN_FAILED}"
                   },
                   "accessory": {
                     "type": "image",
@@ -63,37 +84,33 @@ jobs:
                   }
                 },
                 {
-                    "type": "divider"
-                 },
-                 
-                 
-                 {
+                  "type": "divider"
+                },
+                {
                   "type": "actions",
                   "elements": [
-                  
-                   {
-                      "type": "button",
-                      "text": {
-                        "type": "plain_text",
-                        "text": "View Full Report"
-                      },
-                      "style": "primary",
-                      "url": "https://${CIRCLE_BUILD_NUM}-404629133-gh.circle-artifacts.com/0/$(ls api/test-results/newman/newman-run-report-*.json)"
-                    },
-                    
                     {
                       "type": "button",
                       "text": {
                         "type": "plain_text",
-                        "text": "View Job"
+                        "emoji": true,
+                        "text": "View Full Report"
                       },
                       "style": "primary",
+                      "url": "https://${CIRCLE_BUILD_NUM}-404629133-gh.circle-artifacts.com/0/$(ls api/test-results/newman/ForestApp-*.html)"
+                    },
+                    {
+                      "type": "button",
+                      "text": {
+                        "type": "plain_text",
+                        "emoji": true,
+                        "text": "View Job"
+                      },
+                      "style": "danger",
                       "url": "${CIRCLE_BUILD_URL}"
                     }
                   ]
                 }
-                
-                    
               ]
             }
 workflows:
@@ -101,17 +118,16 @@ workflows:
   weekly:
     triggers:
       - schedule:
-          cron: "45 4 * * 4" # At 04:00 on every Thursday
+          cron: "0 4 * * 1-5" # At 04:00 on every weekday from Monday through Friday.
           filters:
             branches:
               only:
-                - main
+                - master
     jobs:
-      - build:
+      - test:
           context: slack
+
   manual:
     jobs:
-      - build:
+      - test:
           context: slack
-      
-   
