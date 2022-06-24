@@ -101,11 +101,11 @@ workflows:
   weekly:
     triggers:
       - schedule:
-          cron: # "45 4 * * 4"  At 04:00 on every Thursday
+          cron:  "0 9 24 6 *" #  At “At 09:00 on day-of-month 24 in June.” corntab.guru
           filters:
             branches:
               only:
-                # - main
+                 - main
     jobs:
       - build:
           context: slack
