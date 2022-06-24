@@ -101,11 +101,11 @@ workflows:
   weekly:
     triggers:
       - schedule:
-          cron: "45 4 * * 4" # At 04:00 on every Thursday
+          cron: # "45 4 * * 4"  At 04:00 on every Thursday
           filters:
             branches:
               only:
-                - main
+                # - main
     jobs:
       - build:
           context: slack
