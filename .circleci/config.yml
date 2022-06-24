@@ -10,6 +10,7 @@ jobs:
       - newman/newman-run:
           collection: ./test/postman_collection.json
           ignore-redirects: true
+          timeout-request: "5000"
           additional-options: -r cli,junit,json  
 
     
