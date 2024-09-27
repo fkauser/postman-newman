@@ -1,31 +1,130 @@
-
 version: 2.1
 orbs:
-  newman: postman/newman@0.0.2
   slack: circleci/slack@4.4.4
  
-  
 jobs:
   build:
-    executor: newman/postman-newman-docker
+    docker:
+      - image: circleci/node:10.16.3
     steps:
+      - checkout                        
+      - run:
+          name: Update NPM
+          command: "sudo npm install -g npm@5"
+      - restore_cache:
+          key: dependency-cache-{{ checksum "package-lock.json" }}
+      - run:
+          name: Install Dependencies
+          command: npm install
+      - save_cache:
+          key: dependency-cache-{{ checksum "package-lock.json" }}
+          paths:
+            - ./node_modules
+            
+      - run:
+          name: cache clean
+          command: npm cache clean --force     
+      - run:
+          name: Generate Report
+          command: $(npm bin)/newman run ForestApp_api_collection.json --ignore-redirects -r htmlextra,json,junit --reporter-htmlextra-logs --reporter-htmlextra-skipHeaders "Authorization,Cookie,set-cookie,location" --reporter-htmlextra-skipSensitiveData
+       
+      - run:
+          name: Download jq
+          command: curl -sLo jq https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64 && chmod +x ./jq
      
       - run:
-          name: MY ECO MESSAGE
+          name: Save Test Result
           command: |
             echo "***my artifact files ***" 
-            echo "Hello ${CIRCLE_USERNAME}"
-            echo "TRIGGERER: ${CIRCLE_USERNAME}"
-            echo "BUILD_NUMBER: ${CIRCLE_BUILD_NUM}"
-            echo "BUILD_URL: ${CIRCLE_BUILD_URL}"
-            echo "BRANCH: ${CIRCLE_BRANCH}"
-            echo "RUNNING JOB: ${CIRCLE_JOB}"
-            echo "JOB PARALLELISM: ${CIRCLE_NODE_TOTAL}"
-            echo "CIRCLE_REPOSITORY_URL: ${CIRCLE_REPOSITORY_URL}"
+            mkdir -p api/test-results/newman
+            cp ./newman/newman-run-report-*.xml api/test-results/newman
+            cp ./newman/newman-run-report-*.json api/test-results/newman
+            cp ./newman/API_Configuration-*.html api/test-results/newman
             
-     
-    
-    
+      - store_test_results:
+          path: api/test-results
+          
+      - store_artifacts:
+          path: api/test-results/newman
+          
+          
+      - slack/notify:
+          channel: circleci
+          event: always
+          custom: |
+            {
+             	"blocks": [
+            		{
+            			"type": "section",
+            			"text": {
+            				"type": "mrkdwn",
+            				"text": "*API Test Completed* :ballot_box_with_check:"
+            			}
+            		},
+            		{
+            			"type": "section",
+            			"text": {
+            				"type": "mrkdwn",
+            				"text": "*Test:* https://gateway-ocr.openrm.dev\n*BRANCH:* ${CIRCLE_BRANCH}\n*RUNNING JOB:* ${CIRCLE_JOB}\n*JOB PARALLELISM:* ${CIRCLE_NODE_TOTAL}"
+            			},
+            			"accessory": {
+            				"type": "image",
+            				"image_url": "https://cdn-icons-png.flaticon.com/512/603/603197.png",
+            				"alt_text": "Postman"
+            			}
+            		},
+            		{
+            			"type": "divider"
+            		},
+            		{
+            			"type": "actions",
+            			"elements": [
+            				{
+            					"type": "button",
+            					"text": {
+            						"type": "plain_text",
+            						"emoji": true,
+            						"text": "View Full Report"
+            					},
+            					"style": "primary",
+            					"url": "https://${CIRCLE_BUILD_NUM}-405850638-gh.circle-artifacts.com/0/$(ls api/test-results/newman/API_Configuration-*.html)"
+            				},
+            				{
+            					"type": "button",
+            					"text": {
+            						"type": "plain_text",
+            						"emoji": true,
+            						"text": "View Job"
+            					},
+            					"style": "danger",
+            					"url": "${CIRCLE_BUILD_URL}"
+            				}
+            			]
+            		}
+            	]
+            }
+         
+          
 
-           
- 
+workflows:
+  version: 2
+  weekly:
+    triggers:
+      - schedule:
+          cron: "0 1 31 8 *" #  At 01:00 on day-of-month 31 in August. https://crontab.guru/
+          filters:
+            branches:
+              only:
+                - master
+    jobs:
+      - build:
+          context: slack
+
+  manual:
+    jobs:
+      - build:
+          context: slack
+  
+          
+
+      
